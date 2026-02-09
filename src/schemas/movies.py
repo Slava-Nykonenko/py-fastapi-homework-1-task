@@ -1,7 +1,13 @@
 from datetime import date
-from typing import List, Optional
+from typing import List, Optional, Any, Annotated
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, BeforeValidator
+
+
+def coerce_to_int(variable: Any) -> Any:
+    if isinstance(variable, (float, str)) and variable:
+        return int(float(variable))
+    return variable
 
 
 class MovieDetailResponseSchema(BaseModel):
@@ -15,8 +21,8 @@ class MovieDetailResponseSchema(BaseModel):
     orig_title: str
     status: str
     orig_lang: str
-    budget: float
-    revenue: float
+    budget: Annotated[int, BeforeValidator(coerce_to_int)]
+    revenue: Annotated[int, BeforeValidator(coerce_to_int)]
     country: str
 
     model_config = ConfigDict(from_attributes=True)

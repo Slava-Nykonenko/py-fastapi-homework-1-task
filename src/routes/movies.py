@@ -40,12 +40,12 @@ async def get_movie_list(
         select(MovieModel).offset((page - 1) * per_page).limit(per_page)
     )
 
-    base_url = str(request.url).split("?")[0]
+    path = request.url.path
     next_page, prev_page = None, None
     if (page * per_page) < total_items:
-        next_page = f"{base_url}?page={page + 1}&per_page={per_page}"
+        next_page = f"{path}?page={page + 1}&per_page={per_page}"
     if page > 1:
-        prev_page = f"{base_url}?page={page - 1}&per_page={per_page}"
+        prev_page = f"{path}?page={page - 1}&per_page={per_page}"
 
     return {
         "movies": movies.all(),
